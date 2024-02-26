@@ -1,20 +1,22 @@
 version: "3.8"
 
 services:
-  # an-frontend:
-  #   build: ./frontend/
-  #   container_name: an-frontend
-  #   entrypoint: /frontend/dev.entrypoint.sh
-  #   volumes:
-  #     - ./frontend:/frontend
-  #     - node_modules:/frontend/node_modules
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - staging
-  #   depends_on:
-  #     - an-backend
+  an-frontend:
+    build:
+      context: ./frontend/
+      dockerfile: dev.Dockerfile
+    container_name: an-frontend
+    entrypoint: /frontend/dev.entrypoint.sh
+    volumes:
+      - ./frontend:/frontend
+      - node_modules:/frontend/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "3000:3000"
+    networks:
+      - staging
+    depends_on:
+      - an-backend
   an-backend:
     build:
       context: ./backend/
@@ -33,20 +35,20 @@ services:
       - staging
     depends_on:
       - an-redis
-      # - an-db
-  # an-db:
-  #   image: postgres:alpine
-  #   container_name: an-db
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     - POSTGRES_USER=an-admin
-  #     - POSTGRES_PASSWORD=an-admin
-  #     - POSTGRES_DB=audionimbus
-  #   volumes:
-  #     - db_data:/var/lib/postgresql/data
-  #   networks:
-  #     - staging
+      - an-db
+  an-db:
+    image: postgres:alpine
+    container_name: an-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=an-admin
+      - POSTGRES_PASSWORD=an-admin
+      - POSTGRES_DB=audionimbus
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - staging
   an-redis:
     image: redis:latest
     container_name: an-redis
@@ -60,10 +62,9 @@ services:
 
 volumes:
   static:
-  # node_modules:
+  node_modules:
   db_data:
   redis_data:
-
 
 networks:
   staging:
